@@ -16,14 +16,14 @@ sub hotp_truncate {
 	my $offset = (hex $lastbyte) & 0xf;
 	my $offset = $offset * 2;
 
-	my $truncate =	( 
+	my $truncate = (
 		(hex substr($hex, $offset    , 2) & 0x7f) << 24 | 
 		(hex substr($hex, $offset + 2, 2) & 0xff) << 16 | 
 		(hex substr($hex, $offset + 4, 2) & 0xff) << 8 | 
 		(hex substr($hex, $offset + 6, 2) & 0xff) 
 	);
 
-  # 6 letter;
+	# 6 letter;
 	$truncate = substr($truncate, -6);
 
 	return $truncate;
@@ -49,14 +49,13 @@ sub hotp {
 	my $secret_hex = unpack "H*", decode_base32($secret);
 	my $time_hex= sprintf("%016s", sprintf("%x", $time));
 
-
 	# SHA-1 Hex your secret 
 	my $hash = hmac_sha1_hex_string($time_hex, $secret_hex);
 
+	# run trunc to generate a user useable number
 	my $otp = hotp_truncate($hash);
 
 	return $otp;
-
 }
 
 my $secret = "";
