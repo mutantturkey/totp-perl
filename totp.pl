@@ -9,8 +9,7 @@ sub  hmac_sha1_hex_string {
 	return Digest::SHA::hmac_sha1_hex($data, $key);
 }
 
-# everything is 2 here because we are looking at the byte level.. probably
-# should just convert this into a byte array but I'm a noob
+# make a usable number out of that HMAC result
 sub hotp_truncate {
 	my ($hex) = @_;
 	my $lastbyte= substr $hex, -2;
@@ -30,8 +29,7 @@ sub hotp_truncate {
 	return $truncate;
 }
 
-# TOTP is HOTP(K,c) where counter c is time based and changed every 30 seconds (here)
-# HOTP
+# TOTP is HOTP(K,c) where counter c is time based and changed every x seconds (30 here)
 sub totp {
 	my ($time, $secret) = @_;
 
@@ -43,6 +41,8 @@ sub totp {
 
 	return $otp;
 }
+
+# basically HMAC(key, counter)
 sub hotp {
 	my ($time, $secret) = @_;
 
